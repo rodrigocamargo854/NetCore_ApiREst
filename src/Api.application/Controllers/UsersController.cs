@@ -3,73 +3,70 @@ using System.Net;
 using System.Threading.Tasks;
 using Api.Domain.Entities;
 using Api.Domain.Interfaces.Services.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.application.Controllers
+namespace Api.Application.Controllers
 {
-
-    //?http://localhost:5000/api/users
-
-    [Route("api/[Controller]")]
+    //http://localhost:5000/api/users
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _services;
-
-        public UsersController(IUserService services)
+        public IUserService _service { get; set; }
+        public UsersController(IUserService service)
         {
-            _services = services;
+            _service = service;
         }
 
+        [Authorize("Bearer")]
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);//400 bad request
+                return BadRequest(ModelState);  // 400 Bad Request - Solicitação Inválida
             }
-
             try
             {
-                return Ok(await _services.GetAll());
+                return Ok(await _service.GetAll());
             }
-            catch (Exception ex)
+            catch (ArgumentException e)
             {
-
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);//mensagem de erro
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
-        //? estes endpoint espera um guid especifico
-        //localhost:5000/api/users/54564646545654654
+
+        [Authorize("Bearer")]
         [HttpGet]
         [Route("{id}", Name = "GetWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);//400 bad request
+                return BadRequest(ModelState);
             }
             try
             {
-                return Ok(await _services.Get(id));
+                return Ok(await _service.Get(id));
             }
-            catch (Exception ex)
+            catch (ArgumentException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);//mensagem de erro
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
-        //? Inserir informação para dar um insert dentro do Bd
+
+        [Authorize("Bearer")]
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] UserEntities user)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);//400 bad request
+                return BadRequest(ModelState);
             }
             try
             {
-                var result = await _services.Post(user);
+                var result = await _service.Post(user);
                 if (result != null)
                 {
                     return Created(new Uri(Url.Link("GetWithId", new { id = result.id })), result);
@@ -78,25 +75,24 @@ namespace Api.application.Controllers
                 {
                     return BadRequest();
                 }
-
             }
-            catch (Exception ex)
+            catch (ArgumentException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);//mensagem de erro
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
+        [Authorize("Bearer")]
         [HttpPut]
-        //? Update  itens, recebe id
         public async Task<ActionResult> Put([FromBody] UserEntities user)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);//400 bad request
+                return BadRequest(ModelState);
             }
             try
             {
-                var result = await _services.Put(user);
+                var result = await _service.Put(user);
                 if (result != null)
                 {
                     return Ok(result);
@@ -105,32 +101,29 @@ namespace Api.application.Controllers
                 {
                     return BadRequest();
                 }
-
             }
-            catch (Exception ex)
+            catch (ArgumentException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);//mensagem de erro
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
+        [Authorize("Bearer")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);//400 bad request
+                return BadRequest(ModelState);
             }
             try
             {
-                return Ok(await _services.Delete(id));
+                return Ok(await _service.Delete(id));
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);//mensagem de erro
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
     }
 }
-
-
-
