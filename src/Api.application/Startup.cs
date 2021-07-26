@@ -77,22 +77,18 @@ namespace application
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Api Rest DDD",
-                    Description = "Arquitetura DDD",
-                    TermsOfService = new Uri("http://www.google.com.br"),
+                    Title = "Desafio BackEnd Alura",
                     Contact = new OpenApiContact
                     {
                         Name = "Rodrigo Camargo",
                         Email = "rodrigocamargo854@mail.com",
-                        Url = new Uri("http://www.google.com.br")
+                        Url = new Uri("https://github.com/rodrigocamargo854")
                     },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Termo de Licença de Uso",
-                        Url = new Uri("http://www.google.com.br")
-                    }
+
                 });
 
+
+                //? Botão de atorization
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Entre com o Token JWT",
@@ -100,7 +96,8 @@ namespace application
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
                 });
-
+                //?Adicionando o Security Requirement para o botao 
+                //?Autorizathion
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
                         new OpenApiSecurityScheme {
@@ -125,7 +122,7 @@ namespace application
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Curso de API com AspNetCore 3.1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Desafio Back-End Alura");
                 c.RoutePrefix = string.Empty;
             });
 
