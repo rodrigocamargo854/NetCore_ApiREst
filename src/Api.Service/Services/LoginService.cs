@@ -5,6 +5,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Api.Domain.Dtos;
 using Api.Domain.Entities;
+using Api.Domain.Interfaces.Services.User;
 using Api.Domain.Interfaces.Services.Users;
 using Api.Domain.Repository;
 using Api.Domain.Security;
@@ -17,12 +18,12 @@ namespace Api.Service.Services
     {
         private IUserRepository _repository;
         public SigningConfigurations _signingConfigurations;
-        public TokenConfiguratios _tokenConfigurations;
+        public TokenConfigurations _tokenConfigurations;
         private IConfiguration _configuration { get; }
 
         public LoginService(IUserRepository repository,
                             SigningConfigurations signingConfigurations,
-                            TokenConfiguratios tokenConfigurations,
+                            TokenConfigurations tokenConfigurations,
                             IConfiguration configuration)
         {
             _repository = repository;
@@ -106,4 +107,3 @@ namespace Api.Service.Services
 
     }
 }
-

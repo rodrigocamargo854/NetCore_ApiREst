@@ -45,8 +45,8 @@ namespace application
             var signingConfigurations = new SigningConfigurations();
             services.AddSingleton(signingConfigurations);
 
-            var tokenConfigurations = new TokenConfiguratios();
-            new ConfigureFromConfigurationOptions<TokenConfiguratios>(
+            var tokenConfigurations = new TokenConfigurations();
+            new ConfigureFromConfigurationOptions<TokenConfigurations>(
                 Configuration.GetSection("TokenConfigurations"))
                      .Configure(tokenConfigurations);
             services.AddSingleton(tokenConfigurations);

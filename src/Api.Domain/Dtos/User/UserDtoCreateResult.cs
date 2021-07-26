@@ -1,7 +1,6 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace Api.Domain.Dtos
+namespace Api.Domain.Dtos.User
 {
     public class UserDtoCreateResult
     {
@@ -9,8 +8,5 @@ namespace Api.Domain.Dtos
         public string Name { get; set; }
         public string Email { get; set; }
         public DateTime CreateAt { get; set; }
-
-
-
     }
 }

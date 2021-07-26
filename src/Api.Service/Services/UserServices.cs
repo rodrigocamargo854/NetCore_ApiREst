@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Domain.Dtos;
+using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
 using Api.Domain.Interfaces;
+using Api.Domain.Interfaces.Services.User;
 using Api.Domain.Interfaces.Services.Users;
 using Api.Domain.Models.User;
 using AutoMapper;
@@ -43,7 +45,7 @@ namespace Api.Service.Services
             return _mapper.Map<IEnumerable<UserDto>>(listentity);
         }
 
-        public async Task<UserDtoCreateResult> Post(UserDto user)
+        public async Task<UserDtoCreateResult> Post(UserDtoCreate user)
         {
             var model = _mapper.Map<UserModel>(user);
             var entity = _mapper.Map<UserEntities>(model);
@@ -52,7 +54,7 @@ namespace Api.Service.Services
             return _mapper.Map<UserDtoCreateResult>(result);
         }
 
-        public async Task<UserDtoUpdateResult> Put(UserDto user)
+        public async Task<UserDtoUpdateResult> Put(UserDtoUpdate user)
         {
             var model = _mapper.Map<UserModel>(user);
             var entity = _mapper.Map<UserEntities>(model);

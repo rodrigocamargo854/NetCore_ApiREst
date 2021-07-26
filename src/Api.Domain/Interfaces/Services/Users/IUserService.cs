@@ -1,24 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
 
-namespace Api.Domain.Interfaces.Services.Users
+namespace Api.Domain.Interfaces.Services.User
 {
-    //?Na camada domain criamos as interfaces para o usuario ou para 
-    //?qual entidade necessitar. Metodos especificos que recebem o tipo 
-    //?da entidade para
-    //? Aqui criamos toda a regra de negocio.
     public interface IUserService
     {
-        //*Retorna um usuario 
-        Task<UserEntities> Get(Guid id);
-        //?Retorna uma lista de usuarios
-        Task<IEnumerable<UserEntities>> GetAll();
-        Task<UserEntities> Put(UserEntities id);
-        Task<UserEntities> Post(UserEntities id);
+        Task<UserDto> Get(Guid id);
+        Task<IEnumerable<UserDto>> GetAll();
+        Task<UserDtoCreateResult> Post(UserDtoCreate user);
+        Task<UserDtoUpdateResult> Put(UserDtoUpdate user);
         Task<bool> Delete(Guid id);
-
-
     }
 }
