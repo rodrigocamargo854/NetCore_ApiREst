@@ -1,17 +1,18 @@
+using System;
 using Api.CrossCutting.DependencyInjection;
+using Api.Domain.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using Api.Domain.Security;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Collections.Generic;
+using Api.CrossCutting.Mappings;
+using AutoMapper;
 
 namespace application
 {
@@ -31,6 +32,16 @@ namespace application
 
             ConfigureService.ConfigureDependencyService(services);
             ConfigureRepository.ConfigureDependencyRepository(services);
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new DtoToModelProfile());
+                cfg.AddProfile(new EntityToDtoProfile());
+                cfg.AddProfile(new ModelToEntityProfile());
+            });
+
+            IMapper mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
+
             var signingConfigurations = new SigningConfigurations();
             services.AddSingleton(signingConfigurations);
 
@@ -51,20 +62,20 @@ namespace application
                 paramsValidation.ValidAudience = tokenConfigurations.Audience;
                 paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
 
-                //?Valida a assinatura de um token recebido
+                // Valida a assinatura de um token recebido
                 paramsValidation.ValidateIssuerSigningKey = true;
 
-                //?Verifica se um token recebido ainda é válido
+                // Verifica se um token recebido ainda é válido
                 paramsValidation.ValidateLifetime = true;
 
-                //? Tempo de tolerância para a expiração de um token (utilizado
-                //? caso haja problemas de sincronismo de horário entre diferentes
-                //? computadores envolvidos no processo de comunicação)
+                // Tempo de tolerância para a expiração de um token (utilizado
+                // caso haja problemas de sincronismo de horário entre diferentes
+                // computadores envolvidos no processo de comunicação)
                 paramsValidation.ClockSkew = TimeSpan.Zero;
             });
 
-            //? Ativa o uso do token como forma de autorizar o acesso
-            //? a recursos deste projeto
+            // Ativa o uso do token como forma de autorizar o acesso
+            // a recursos deste projeto
             services.AddAuthorization(auth =>
             {
                 auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
@@ -77,18 +88,22 @@ namespace application
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Desafio BackEnd Alura",
+                    Title = "Curso de API com AspNetCore 3.1 - Na Prática",
+                    Description = "Arquitetura DDD",
+                    TermsOfService = new Uri("http://www.mfrinfo.com.br"),
                     Contact = new OpenApiContact
                     {
-                        Name = "Rodrigo Camargo",
-                        Email = "rodrigocamargo854@mail.com",
-                        Url = new Uri("https://github.com/rodrigocamargo854")
+                        Name = "Marcos Fabricio Rosa",
+                        Email = "mfr@mail.com",
+                        Url = new Uri("http://www.mfrinfo.com.br")
                     },
-
+                    License = new OpenApiLicense
+                    {
+                        Name = "Termo de Licença de Uso",
+                        Url = new Uri("http://www.mfrinfo.com.br")
+                    }
                 });
 
-
-                //? Botão de atorization
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Entre com o Token JWT",
@@ -96,8 +111,7 @@ namespace application
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
                 });
-                //?Adicionando o Security Requirement para o botao 
-                //?Autorizathion
+
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
                         new OpenApiSecurityScheme {
@@ -122,7 +136,7 @@ namespace application
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Desafio Back-End Alura");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Curso de API com AspNetCore 3.1");
                 c.RoutePrefix = string.Empty;
             });
 
